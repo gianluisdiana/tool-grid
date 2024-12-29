@@ -67,13 +67,22 @@ function oShift(direction, distance) {
   this.distance = distance;
 
   this.exec = function () {
-    shift(direction, distance);
+    if (typeof distance == "object") {
+      shift(direction, distance.eval());
+    } else {
+      shift(direction, distance);
+    }
   }
 
   this.toPlantuml = function () {
     params = '"' + this.direction + '"';
     if (this.distance !== undefined) {
-      params += ", " + this.distance;
+      params += ", ";
+      if (typeof this.distance == "number"){
+        params += this.distance;
+      } else {
+        params += this.distance.toPlantuml();
+      }
     }
     return "\n:Shift(" + params + ");";
   }
